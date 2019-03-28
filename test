@@ -1,0 +1,31 @@
+<?php
+$servername = "localhost";
+$username = "admin";
+$password = "VGG5jLmH5qrebZH";
+$db = "test";
+try {
+		$conn = new PDO("mysql:host=$servername;dbname=$db", $username, $password);		
+		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	}
+	catch(PDOException $e)
+	{
+		echo "Connection failed: " . $e->getMessage();
+	}
+	
+function getData()
+{	
+	global $conn;
+	$sql = "SELECT accounts.underwriter, accounts.accountType, sum(policies.premium), count(policies.id)
+			FROM accounts
+       		JOIN policies ON policies.accountID = accounts.id
+				GROUP BY accounts.underwriter
+			";
+	$res = $conn->query($sql);
+	$OBJ = $res->fetchAll(PDO::FETCH_ASSOC);
+	
+	return $OBJ;
+}
+
+$tOBJ = getData();
+print_r($tOBJ);
+?>
